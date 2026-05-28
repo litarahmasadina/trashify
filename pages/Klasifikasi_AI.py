@@ -2,19 +2,20 @@ import os
 import streamlit as st
 from PIL import Image
 import numpy as np
-
-# Import tf_keras 
-from tensorflow import keras
 import tensorflow as tf
+import tf_keras as keras 
 
 st.set_page_config(page_title="Demo AI", page_icon="📸")
 st.title("📸 Deteksi Kategori Sampah")
 
-# Load model menggunakan tf_keras
+# Load model pakai tf_keras dan absolute path
 @st.cache_resource
 def load_keras_model():
     try:
-        model = keras.models.load_model('model/model_trashid_v3.keras', compile=False)
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        model_path = os.path.join(current_dir, "..", "model", "model_trashid_v3.keras")
+        
+        model = keras.models.load_model(model_path, compile=False)
         return model
     except Exception as e:
         st.error(f"Gagal memuat model: {e}")
@@ -31,7 +32,7 @@ if uploaded_file is not None:
     
     if st.button("Analisis Gambar"):
         if model is None:
-            st.error("⚠️ File model 'model_trashid_v3.keras' belum dimasukkan ke folder 'model'.")
+            st.error("⚠️ File model 'model_trashid_v3.keras' belum dimasukkan ke folder 'model' atau gagal dimuat.")
         else:
             with st.spinner("AI sedang menganalisis..."):
                 img_resized = image.resize((224, 224))
