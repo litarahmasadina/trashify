@@ -14,7 +14,7 @@ st.title("📸 Deteksi Kategori Sampah")
 @st.cache_resource
 def load_keras_model():
     try:
-        model = keras.models.load_model('model/model_trashid_v3.keras')
+        model = keras.models.load_model('model/model_trashid_v3.keras', compile=False)
         return model
     except Exception as e:
         st.error(f"Gagal memuat model: {e}")
