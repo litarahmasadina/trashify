@@ -4,7 +4,7 @@ from PIL import Image
 import numpy as np
 
 # Import tf_keras 
-import tf_keras as keras 
+from tensorflow import keras
 import tensorflow as tf
 
 st.set_page_config(page_title="Demo AI", page_icon="📸")
