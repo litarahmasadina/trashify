@@ -2,5 +2,6 @@ streamlit
 pandas
 plotly
 Pillow
-tensorflow-cpu==2.13.1
 numpy
+tensorflow==2.15.0
+tf-keras==2.15.0
