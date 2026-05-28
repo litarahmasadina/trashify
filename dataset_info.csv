@@ -1,0 +1,10 @@
+Split,Kategori,Jumlah_Gambar
+train,Anorganik,2506
+train,Organik,2506
+train,Residu,2506
+val,Anorganik,537
+val,Organik,526
+val,Residu,479
+test,Anorganik,537
+test,Organik,527
+test,Residu,480
