@@ -3,12 +3,12 @@ import streamlit as st
 from PIL import Image
 import numpy as np
 import tensorflow as tf
-import keras 
+import tf_keras as keras
 
 st.set_page_config(page_title="Demo AI", page_icon="📸")
 st.title("📸 Deteksi Kategori Sampah")
 
-# Load model pakai keras standar dan absolute path
+# Load model pakai tf_keras dan absolute path
 @st.cache_resource
 def load_keras_model():
     try:
