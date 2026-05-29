@@ -12,11 +12,17 @@ st.set_page_config(
 
 st.title("📸 Deteksi Kategori Sampah")
 
+# PENTING: Kelas ini berfungsi untuk mengabaikan parameter 'groups' yang bikin error
+class CustomDepthwiseConv2D(keras.layers.DepthwiseConv2D):
+    def __init__(self, **kwargs):
+        if 'groups' in kwargs:
+            kwargs.pop('groups')
+        super().__init__(**kwargs)
+
 @st.cache_resource
 def load_keras_model():
     try:
         current_dir = os.path.dirname(os.path.abspath(__file__))
-        # PENTING: Path model sekarang mengarah ke file .h5
         model_path = os.path.join(
             current_dir,
             "..",
@@ -28,8 +34,12 @@ def load_keras_model():
             st.error(f"❌ File model tidak ditemukan di: {model_path}")
             return None
 
-        # Load model H5 langsung pakai bawaan tf.keras
-        model = tf.keras.models.load_model(model_path, compile=False)
+        # PENTING: Sisipkan custom_objects agar Keras menggunakan kelas yang sudah kita modifikasi
+        model = keras.models.load_model(
+            model_path, 
+            custom_objects={'DepthwiseConv2D': CustomDepthwiseConv2D},
+            compile=False
+        )
         st.success("✅ Model berhasil dimuat!")
         return model
 
