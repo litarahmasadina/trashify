@@ -1,13 +1,9 @@
-```python
 import os
 import streamlit as st
 from PIL import Image
 import numpy as np
 import tensorflow as tf
 
-# ======================
-# PAGE CONFIG
-# ======================
 st.set_page_config(
     page_title="Demo AI",
     page_icon="📸"
@@ -15,9 +11,7 @@ st.set_page_config(
 
 st.title("📸 Deteksi Kategori Sampah")
 
-# ======================
-# LOAD MODEL
-# ======================
+
 @st.cache_resource
 def load_keras_model():
 
@@ -34,59 +28,43 @@ def load_keras_model():
             "model_trashid_v3.keras"
         )
 
-        st.write("📂 Path Model:", model_path)
+        st.write(model_path)
 
-        # cek file ada atau tidak
         if not os.path.exists(model_path):
 
-            st.error("❌ File model tidak ditemukan!")
+            st.error("Model tidak ditemukan")
 
             return None
 
-        st.success("✅ File model ditemukan!")
-
-        # load model
         model = tf.keras.models.load_model(
             model_path,
             compile=False
         )
 
-        st.success("✅ Model berhasil dimuat!")
+        st.success("Model berhasil dimuat")
 
         return model
 
     except Exception as e:
 
-        st.error(f"❌ Error load model: {e}")
+        st.error(e)
 
         return None
 
 
-# ======================
-# LOAD MODEL KE MEMORY
-# ======================
 model = load_keras_model()
 
-# ======================
-# LABEL KELAS
-# ======================
 class_names = [
     "Anorganik",
     "Organik",
     "Residu"
 ]
 
-# ======================
-# UPLOAD FILE
-# ======================
 uploaded_file = st.file_uploader(
     "Unggah foto sampah",
     type=["jpg", "jpeg", "png"]
 )
 
-# ======================
-# PREDIKSI
-# ======================
 if uploaded_file is not None:
 
     image = Image.open(
@@ -95,7 +73,6 @@ if uploaded_file is not None:
 
     st.image(
         image,
-        caption="Gambar yang diunggah",
         width=300
     )
 
@@ -104,61 +81,49 @@ if uploaded_file is not None:
         if model is None:
 
             st.error(
-                "⚠️ Model gagal dimuat"
+                "Model gagal dimuat"
             )
 
         else:
 
-            with st.spinner(
-                "AI sedang menganalisis..."
-            ):
+            img_resized = image.resize(
+                (224, 224)
+            )
 
-                # resize gambar
-                img_resized = image.resize(
-                    (224, 224)
-                )
+            img_array = np.array(
+                img_resized
+            )
 
-                # convert array
-                img_array = np.array(
-                    img_resized
-                )
+            img_array = (
+                img_array.astype("float32")
+                / 255.0
+            )
 
-                # normalisasi
-                img_array = (
-                    img_array.astype("float32")
-                    / 255.0
-                )
+            img_array = np.expand_dims(
+                img_array,
+                axis=0
+            )
 
-                # tambah dimensi
-                img_array = np.expand_dims(
-                    img_array,
-                    axis=0
-                )
+            predictions = model.predict(
+                img_array
+            )
 
-                # prediksi
-                predictions = model.predict(
-                    img_array
-                )
+            predicted_index = np.argmax(
+                predictions[0]
+            )
 
-                predicted_index = np.argmax(
-                    predictions[0]
-                )
+            confidence = float(
+                np.max(predictions[0]) * 100
+            )
 
-                confidence = float(
-                    np.max(predictions[0]) * 100
-                )
+            predicted_class = class_names[
+                predicted_index
+            ]
 
-                predicted_class = class_names[
-                    predicted_index
-                ]
+            st.success(
+                f"Hasil Deteksi: {predicted_class}"
+            )
 
-                # output
-                st.success(
-                    f"🗑️ Hasil Deteksi: {predicted_class}"
-                )
-
-                st.write(
-                    f"🎯 Tingkat Kepercayaan: "
-                    f"{confidence:.2f}%"
-                )
-```
+            st.write(
+                f"Tingkat Kepercayaan: {confidence:.2f}%"
+            )
