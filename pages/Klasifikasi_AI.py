@@ -5,9 +5,9 @@ from PIL import Image
 import numpy as np
 import tensorflow as tf
 
-# =========================
-# CONFIG PAGE
-# =========================
+# ======================
+# PAGE CONFIG
+# ======================
 st.set_page_config(
     page_title="Demo AI",
     page_icon="📸"
@@ -15,19 +15,18 @@ st.set_page_config(
 
 st.title("📸 Deteksi Kategori Sampah")
 
-# =========================
+# ======================
 # LOAD MODEL
-# =========================
+# ======================
 @st.cache_resource
 def load_keras_model():
+
     try:
 
-        # Lokasi folder saat ini
         current_dir = os.path.dirname(
             os.path.abspath(__file__)
         )
 
-        # Path model
         model_path = os.path.join(
             current_dir,
             "..",
@@ -35,17 +34,18 @@ def load_keras_model():
             "model_trashid_v3.keras"
         )
 
-        # DEBUG PATH
-        st.write("📂 Path model:", model_path)
+        st.write("📂 Path Model:", model_path)
 
-        # Cek file ada atau tidak
+        # cek file ada atau tidak
         if not os.path.exists(model_path):
+
             st.error("❌ File model tidak ditemukan!")
+
             return None
 
         st.success("✅ File model ditemukan!")
 
-        # Load model
+        # load model
         model = tf.keras.models.load_model(
             model_path,
             compile=False
@@ -57,56 +57,54 @@ def load_keras_model():
 
     except Exception as e:
 
-        st.error(f"❌ Gagal memuat model: {e}")
+        st.error(f"❌ Error load model: {e}")
 
         return None
 
 
-# Load model
+# ======================
+# LOAD MODEL KE MEMORY
+# ======================
 model = load_keras_model()
 
-# =========================
-# CLASS LABEL
-# =========================
+# ======================
+# LABEL KELAS
+# ======================
 class_names = [
     "Anorganik",
     "Organik",
     "Residu"
 ]
 
-# =========================
-# UPLOAD GAMBAR
-# =========================
+# ======================
+# UPLOAD FILE
+# ======================
 uploaded_file = st.file_uploader(
-    "Unggah foto sampah (JPG/PNG)",
+    "Unggah foto sampah",
     type=["jpg", "jpeg", "png"]
 )
 
-# =========================
-# PROSES PREDIKSI
-# =========================
+# ======================
+# PREDIKSI
+# ======================
 if uploaded_file is not None:
 
-    # Buka gambar
     image = Image.open(
         uploaded_file
     ).convert("RGB")
 
-    # Tampilkan gambar
     st.image(
         image,
         caption="Gambar yang diunggah",
         width=300
     )
 
-    # Tombol prediksi
     if st.button("Analisis Gambar"):
 
-        # Kalau model gagal dimuat
         if model is None:
 
             st.error(
-                "⚠️ Model gagal dimuat."
+                "⚠️ Model gagal dimuat"
             )
 
         else:
@@ -115,34 +113,33 @@ if uploaded_file is not None:
                 "AI sedang menganalisis..."
             ):
 
-                # Resize
+                # resize gambar
                 img_resized = image.resize(
                     (224, 224)
                 )
 
-                # Convert array
+                # convert array
                 img_array = np.array(
                     img_resized
                 )
 
-                # Normalisasi
+                # normalisasi
                 img_array = (
                     img_array.astype("float32")
                     / 255.0
                 )
 
-                # Tambah dimensi batch
+                # tambah dimensi
                 img_array = np.expand_dims(
                     img_array,
                     axis=0
                 )
 
-                # Prediksi
+                # prediksi
                 predictions = model.predict(
                     img_array
                 )
 
-                # Ambil hasil
                 predicted_index = np.argmax(
                     predictions[0]
                 )
@@ -155,10 +152,9 @@ if uploaded_file is not None:
                     predicted_index
                 ]
 
-                # Output
+                # output
                 st.success(
-                    f"🗑️ Hasil Deteksi: "
-                    f"{predicted_class}"
+                    f"🗑️ Hasil Deteksi: {predicted_class}"
                 )
 
                 st.write(
