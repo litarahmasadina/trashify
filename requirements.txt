@@ -3,5 +3,5 @@ pandas
 plotly
 Pillow
 numpy
-tensorflow==2.15.0
-tf-keras==2.15.0
+tensorflow==2.21.0
+tf-keras==2.21.0
