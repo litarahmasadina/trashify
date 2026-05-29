@@ -4,4 +4,3 @@ plotly
 Pillow
 numpy
 tensorflow==2.21.0
-tf-keras==2.21.0
