@@ -22,13 +22,11 @@ def load_data():
 df = load_data()
 
 # Tentukan total gambar
-total_images = 10604 # Default sesuai di gambar
+total_images = 10604 
 if not df.empty and 'Jumlah_Gambar' in df.columns:
     total_images = df['Jumlah_Gambar'].sum()
 
-# ==========================================
 # PERTANYAAN BISNIS 1
-# ==========================================
 st.success("**Pertanyaan 1:** Sejauh mana tingkat ketidakseimbangan kelas pada dataset mentah, dan bagaimana kita memastikan komposisi data seimbang agar model AI terhindar dari bias?")
 
 st.metric("Total Keseluruhan Gambar Dataset", f"{total_images} File")
@@ -37,11 +35,10 @@ col1, col2 = st.columns(2)
 
 with col1:
     st.write("**1. Distribusi Kategori Dataset Trashify Setelah Balancing**")
-    # Membuat grafik persis seperti di Colab (Matplotlib)
     fig1, ax1 = plt.subplots(figsize=(8, 5))
     categories = ['Anorganik', 'Residu', 'Organik']
     final_counts = [3194, 3194, 3194]
-    colors = ['#4CAF50', '#3498DB', '#E74C3C'] # Hijau, Biru, Merah
+    colors = ['#4CAF50', '#3498DB', '#E74C3C']
     
     bars = ax1.bar(categories, final_counts, color=colors, alpha=0.8)
     ax1.set_title('Distribusi Kategori Dataset Trashify Setelah Balancing', fontweight='bold', fontsize=12)
@@ -58,13 +55,11 @@ with col1:
 
 with col2:
     st.write("**2. Distribusi Data (Train, Val, Test)**")
-    # Memunculkan grafik splitting
     if not df.empty and 'Split' in df.columns:
         fig_bar = px.bar(df, x='Split', y='Jumlah_Gambar', color='Kategori', barmode='group',
                          color_discrete_map={'Anorganik':'#3498DB', 'Organik':'#4CAF50', 'Residu':'#E74C3C'})
         st.plotly_chart(fig_bar, use_container_width=True)
     else:
-        # Fallback dummy data agar grafik splitting tetap muncul dengan cantik
         dummy_split = pd.DataFrame({
             'Split': ['train', 'train', 'train', 'val', 'val', 'val', 'test', 'test', 'test'],
             'Kategori': ['Anorganik', 'Organik', 'Residu', 'Anorganik', 'Organik', 'Residu', 'Anorganik', 'Organik', 'Residu'],
@@ -81,22 +76,17 @@ Untuk memastikan komposisi data yang seimbang dan bebas bias, diterapkan teknik 
 """)
 st.markdown("---")
 
-# ==========================================
 # PERTANYAAN BISNIS 2
-# ==========================================
 st.success("**Pertanyaan 2:** Bagaimana distribusi ukuran resolusi dan format warna pada dataset mentah, dan apakah langkah standarisasi visual diperlukan sebelum data diekspor?")
 
 st.write("**Analisis Kepadatan Ragam Ukuran File Gambar Setelah Standarisasi**")
 
-# Membuat grafik Seaborn persis seperti di Colab
 fig2, ax2 = plt.subplots(figsize=(9, 5))
 
-# Cek apakah dataframe memiliki kolom Ukuran_KB. Jika tidak, gunakan dummy data agar grafik tidak error.
 if not df.empty and 'Ukuran_KB' in df.columns:
     sns.histplot(data=df, x='Ukuran_KB', hue='Kategori', kde=True, bins=30, alpha=0.5, ax=ax2,
                  palette={'Anorganik':'#3498DB', 'Residu':'#E74C3C', 'Organik':'#4CAF50'})
 else:
-    # Dummy data menyerupai sebaran distribusi lognormal di Colab
     np.random.seed(42)
     anorganik = np.random.lognormal(mean=2.0, sigma=0.6, size=3194)
     residu = np.random.lognormal(mean=2.1, sigma=0.5, size=3194)
@@ -124,9 +114,7 @@ Sebagai bukti keberhasilan tindakan tersebut, kurva kepadatan dan histogram di a
 """)
 st.markdown("---")
 
-# ==========================================
 # PERTANYAAN BISNIS 3
-# ==========================================
 st.success("**Pertanyaan 3:** Berapa banyak file citra dalam dataset mentah yang terindikasi rusak (corrupt) atau memiliki format warna tidak standar, yang harus dibersihkan?")
 
 col_metric1, col_metric2 = st.columns(2)
