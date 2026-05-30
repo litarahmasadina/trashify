@@ -8,4 +8,4 @@ Selamat datang di aplikasi **Trashify**.
 Aplikasi ini dikhususkan untuk memenuhi **capstone project CC26-PSU346** dengan tujuan mengklasifikasikan gambar sampah ke dalam tiga kategori utama: **Organik, Anorganik, dan Residu**.
 """)
 
-st.info("👈 Gunakan sidebar di sebelah kiri untuk melihat hasil Analisis Data (EDA) atau mencoba Model AI Klasifikasi.")
+st.info("👈 Gunakan sidebar di sebelah kiri untuk melihat hasil Dashboard Analisis Data atau mencoba Model AI untuk Klasifikasi Sampah.")
