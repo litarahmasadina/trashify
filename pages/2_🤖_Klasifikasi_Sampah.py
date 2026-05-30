@@ -12,7 +12,6 @@ st.set_page_config(
 
 st.title("📸 Deteksi Kategori Sampah")
 
-# PENTING: Kelas ini berfungsi untuk mengabaikan parameter 'groups' yang bikin error
 class CustomDepthwiseConv2D(keras.layers.DepthwiseConv2D):
     def __init__(self, **kwargs):
         if 'groups' in kwargs:
@@ -34,7 +33,6 @@ def load_keras_model():
             st.error(f"❌ File model tidak ditemukan di: {model_path}")
             return None
 
-        # PENTING: Sisipkan custom_objects agar Keras menggunakan kelas yang sudah kita modifikasi
         model = keras.models.load_model(
             model_path, 
             custom_objects={'DepthwiseConv2D': CustomDepthwiseConv2D},
