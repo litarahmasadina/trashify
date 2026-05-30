@@ -1,21 +1,19 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import matplotlib.pyplot as plt
-import seaborn as sns
 
 # Konfigurasi Halaman
-st.set_page_config(page_title="Dashboard Analisis Trashify", page_icon="♻️", layout="wide")
+st.set_page_config(page_title="Dashboard Interaktif Trashify", page_icon="♻️", layout="wide")
 
 # Mengubah Judul agar lebih representatif
-st.title("♻️ Dashboard Analisis Kualitas & Keseimbangan Dataset Trashify")
+st.title("♻️ Dashboard Analisis Dataset Trashify")
 st.markdown("Dashboard ini menyajikan evaluasi metrik data, standarisasi visual, dan komposisi dataset sebelum digunakan untuk melatih arsitektur CNN.")
 st.markdown("---")
 
 # Load data hasil ekstraksi folder
 @st.cache_data
 def load_data():
-    # Pastikan file CSV tersedia di path yang benar
+    # Pastikan file CSV tersedia di path yang benar (data/dataset_info.csv)
     return pd.read_csv("data/dataset_info.csv")
 
 try:
@@ -24,7 +22,7 @@ try:
 except FileNotFoundError:
     st.warning("File dataset_info.csv tidak ditemukan. Menampilkan template dashboard...")
     df = pd.DataFrame()
-    total_images = 10604 # Sesuai gambar referensi
+    total_images = 10604 
 
 # ==========================================
 # PERTANYAAN BISNIS 1
@@ -63,20 +61,7 @@ st.markdown("---")
 st.success("**Pertanyaan 2:** Bagaimana distribusi ukuran resolusi dan format warna pada dataset mentah, dan apakah langkah standarisasi visual diperlukan sebelum data diekspor?")
 
 st.write("**Analisis Kepadatan Ragam Ukuran File Gambar Setelah Standarisasi**")
-st.caption("Plot di bawah ini menggunakan seaborn. Pastikan Anda memiliki dataframe (misal: df_clean) yang berisi kolom 'Ukuran_KB' dan 'Kategori' untuk memunculkan grafiknya dengan tepat.")
-
-# Placeholder/Template untuk grafik Seaborn seperti di Colab
-# Hapus komentar (uncomment) dan sesuaikan 'df_clean' jika datanya diload di Streamlit
-'''
-fig = plt.figure(figsize=(10, 5))
-sns.histplot(data=df_clean, x='Ukuran_KB', hue='Kategori', kde=True, bins=30, alpha=0.5, 
-             palette={'Organik':'#2ecc71', 'Anorganik':'#3498db', 'Residu':'#e74c3c'})
-plt.title('Analisis Kepadatan Ragam Ukuran File Gambar Setelah Standarisasi', fontweight='bold')
-plt.xlabel('Ukuran File (KB)')
-plt.ylabel('Frekuensi Kemunculan')
-plt.grid(True, linestyle='--', alpha=0.3)
-st.pyplot(fig)
-'''
+st.caption("Catatan: Tambahkan kode visualisasi Seaborn di sini jika dataframe 'df_clean' sudah diekspor dan tersedia.")
 
 st.info("""
 **Analisis & Kesimpulan:** Berdasarkan tinjauan metadata di awal, dataset mentah memiliki distribusi ukuran resolusi yang sangat acak serta format warna yang tidak seragam. Hal ini mengonfirmasi bahwa langkah standarisasi visual sangat diperlukan sebelum data diekspor.
@@ -97,4 +82,5 @@ with col_metric2:
     st.metric(label="Persentase Kerusakan Data Mentah", value="0.0%")
 
 st.info("""
-**Analisis & Kesimpulan:** Berdasarkan kalkulasi log pembersihan data pada Tahap 1.2, teridentifikasi sebanyak **0 file citra** yang rusak (*corrupt*) atau mengalami kegagalan pembacaan struktur enkripsi oleh komponen *library* PIL. Jika terdapat file yang rusak, maka file tersebut akan dideklarasikan sebagai anomali dan akan dieliminasi secara perman
+**Analisis & Kesimpulan:** Berdasarkan kalkulasi log pembersihan data pada Tahap 1.2, teridentifikasi sebanyak **0 file citra** yang rusak (*corrupt*) atau mengalami kegagalan pembacaan struktur enkripsi oleh komponen *library* PIL. Jika terdapat file yang rusak, maka file tersebut akan dideklarasikan sebagai anomali dan akan dieliminasi secara permanen dari *working directory*. Langkah preventif ini sangat krusial dilakukan di awal siklus *pipeline* agar tidak memicu kegagalan (*error*) fatal pada saat generator memuat *batch* data di tahap pelatihan model selanjutnya.
+""")
