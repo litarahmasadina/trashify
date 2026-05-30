@@ -8,8 +8,7 @@ import numpy as np
 # Konfigurasi Halaman
 st.set_page_config(page_title="Dashboard Analisis Trashify", page_icon="♻️", layout="wide")
 
-st.title("♻️ Dashboard Analisis Kualitas & Keseimbangan Dataset Trashify")
-st.markdown("Dashboard ini menyajikan evaluasi metrik data, standarisasi visual, dan komposisi dataset sebelum digunakan untuk melatih arsitektur CNN.")
+st.title("♻️ Dashboard Analisis Dataset Trashify")
 st.markdown("---")
 
 # Fungsi load data
